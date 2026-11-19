@@ -1,1 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nuestra Boda</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #2f5d46;
+      font-family: 'Georgia', serif;
+      color: #2c3531;
+      display: flex;
+      justify-content: center;
+      padding: 24px 14px;
+      min-height: 100vh;
+    }
+    .tarjeta {
+      background-color: #f7f4ed;
+      width: 100%;
+      max-width: 480px;
+      border-radius: 20px;
+      padding: 36px 24px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+      text-align: center;
+      border: 1px solid #d8d0c0;
+    }
+    .subtitulo {
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #6b7c72;
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-size: 34px;
+      font-weight: normal;
+      color: #2f5d46;
+      margin-bottom: 16px;
+    }
+    .fecha {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 24px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid #dcd4c6;
+    }
+    .btn-musica {
+      background-color: #2f5d46;
+      color: #f7f4ed;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 999px;
+      font-family: 'Georgia', serif;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(47, 93, 70, 0.25);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.2s;
+    }
+    .btn-musica:active { transform: scale(0.97); }
+  </style>
+</head>
+<body>
 
+  <main class="tarjeta">
+    <p class="subtitulo">¡Nos Casamos!</p>
+    <h1>Nuestros Nombres</h1>
+    <p class="fecha">Diciembre 2026</p>
+
+    <!-- Reproductor de música -->
+    <audio id="audioBoda" src="./cancion.mp3" loop preload="auto"></audio>
+    <button id="btnAudio" class="btn-musica" onclick="alternarMusica()">
+      <span id="iconoAudio">▶</span>
+      <span id="textoAudio">Escuchar nuestra canción</span>
+    </button>
+  </main>
+
+  <script>
+    const audio = document.getElementById("audioBoda");
+    const icono = document.getElementById("iconoAudio");
+    const texto = document.getElementById("textoAudio");
+
+    function alternarMusica() {
+      if (audio.paused) {
+        audio.play().then(() => {
+          icono.textContent = "❚❚";
+          texto.textContent = "Pausar música";
+        }).catch(() => {
+          texto.textContent = "Toca de nuevo para sonar";
+        });
+      } else {
+        audio.pause();
+        icono.textContent = "▶";
+        texto.textContent = "Reanudar música";
+      }
+    }
+  </script>
+
+</body>
+</html>
