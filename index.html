@@ -61,6 +61,56 @@
       transition: transform 0.2s;
     }
     .btn-musica:active { transform: scale(0.97); }
+
+    .galeria-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .galeria-grid img {
+      width: 100%;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 12px;
+      cursor: zoom-in;
+      border: 1px solid #d8d0c0;
+      display: block;
+    }
+    .visor-zoom {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.88);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      padding: 18px;
+    }
+    .visor-zoom.activo {
+      display: flex;
+    }
+    .visor-zoom img {
+      max-width: 95vw;
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    .cerrar-zoom {
+      position: fixed;
+      top: 16px;
+      right: 20px;
+      background: #f7f4ed;
+      color: #2c3531;
+      border: none;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    
   </style>
 </head>
 <body>
@@ -114,7 +164,24 @@
       </div>
     </section>
 
+    <!-- Sección Galería con Zoom -->
+    <section style="margin-top: 28px; padding-top: 22px; border-top: 1px solid #dcd4c6;">
+      <p class="subtitulo" style="margin-bottom: 4px;">Momentos</p>
+      <p style="font-size: 13px; color: #666; margin-bottom: 8px;">Toca una foto para verla más grande</p>
+
+      <div class="galeria-grid">
+        <img src="./img/foto1.jpeg" alt="Foto 1" onclick="abrirZoom(this.src, this.alt)">
+        <img src="./img/foto2.jpeg" alt="Foto 2" onclick="abrirZoom(this.src, this.alt)">
+      </div>
+    </section>
+
      </main>
+
+  <!-- Visor ampliado -->
+  <div id="visorZoom" class="visor-zoom" onclick="cerrarZoom(event)">
+    <button type="button" class="cerrar-zoom" onclick="cerrarZoom(event)" aria-label="Cerrar">×</button>
+    <img id="imagenZoom" src="" alt="">
+  </div>
 
   <script>
     const audio = document.getElementById("audioBoda");
@@ -145,6 +212,23 @@
       const estaOculto = contenedor.style.display === "none";
       contenedor.style.display = estaOculto ? "block" : "none";
       enlace.textContent = estaOculto ? "Ocultar mapa" : "Ver mapa interactivo";
+    }
+
+    function abrirZoom(src, alt) {
+      const visor = document.getElementById("visorZoom");
+      const img = document.getElementById("imagenZoom");
+      if (!visor || !img) return;
+      img.src = src;
+      img.alt = alt || "Foto ampliada";
+      visor.classList.add("activo");
+    }
+
+    function cerrarZoom(evento) {
+      const visor = document.getElementById("visorZoom");
+      if (!visor) return;
+      if (!evento || evento.target === visor || evento.target.classList.contains("cerrar-zoom")) {
+        visor.classList.remove("activo");
+      }
     }
   </script>
 
