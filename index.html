@@ -136,28 +136,16 @@
       }
     }
 
-    function cargarMapaBoda() {
-  const contenedor = document.getElementById("contenedorMapaBoda");
-  const iframe = document.getElementById("iframeMapaBoda");
-  const enlace = document.getElementById("enlaceVerMapa");
-
-  if (iframe && iframe.dataset.src && !iframe.src) {
-    iframe.src = iframe.dataset.src;
-  }
-
-  if (contenedor) {
-    contenedor.style.display = "block";
-  }
-
-  if (enlace) {
-    enlace.textContent = "Ocultar mapa";
-    enlace.onclick = function () {
-      const visible = contenedor.style.display !== "none";
-      contenedor.style.display = visible ? "none" : "block";
-      enlace.textContent = visible ? "Ver mapa interactivo" : "Ocultar mapa";
-    };
-  }
-}
+    function alternarMapaBoda(evento) {
+      if (evento) evento.preventDefault();
+      const contenedor = document.getElementById("contenedorMapaBoda");
+      const enlace = document.getElementById("enlaceVerMapa");
+      if (!contenedor || !enlace) return;
+    
+      const estaOculto = contenedor.style.display === "none";
+      contenedor.style.display = estaOculto ? "block" : "none";
+      enlace.textContent = estaOculto ? "Ocultar mapa" : "Ver mapa interactivo";
+    }
   </script>
 
 </body>
