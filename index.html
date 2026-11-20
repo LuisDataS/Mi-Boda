@@ -241,7 +241,7 @@
 
           <div class="campo-boda">
             <label for="asisteInvitado">¿Asistes? *</label>
-            <select id="asisteInvitado" name="asiste" required>
+            <select id="asisteInvitado" name="asiste" required onchange="ajustarCuposPorAsistencia()">
               <option value="">Selecciona una opción</option>
               <option value="Sí">Sí</option>
               <option value="No">No</option>
@@ -250,7 +250,7 @@
 
           <div class="campo-boda">
             <label for="cuposInvitado">Cupos *</label>
-            <input type="number" id="cuposInvitado" name="cupos" min="0" max="20" value="1" required>
+            <input type="number" id="cuposInvitado" name="cupos" min="1" max="5" value="1" required oninput="validarCuposEnVivo()">
           </div>
 
           <div class="campo-boda">
@@ -338,6 +338,17 @@
         mensaje: document.getElementById("mensajeInvitado").value.trim()
       };
 
+      if (payload.asiste === "No") {
+        payload.cupos = "0";
+      }
+
+      if (payload.asiste === "Sí" && (!payload.cupos || Number(payload.cupos) < 1)) {
+        estado.style.color = "#9e2a2b";
+        estado.textContent = "Si confirmas asistencia, el número de cupos debe ser de 1 o más.";
+        document.getElementById("cuposInvitado").focus();
+        return;
+      }
+
       if (!payload.nombre || !payload.asiste) {
         estado.style.color = "#9e2a2b";
         estado.textContent = "Por favor completa tu nombre y si asistes.";
@@ -379,6 +390,64 @@
       const estaOculto = contenedor.style.display === "none";
       contenedor.style.display = estaOculto ? "block" : "none";
       enlace.textContent = estaOculto ? "Ocultar formulario" : "Abrir formulario de confirmación";
+    }
+
+    function ajustarCuposPorAsistencia() {
+      const asiste = document.getElementById("asisteInvitado");
+      const cupos = document.getElementById("cuposInvitado");
+      const estado = document.getElementById("estadoConfirmacion");
+      if (!asiste || !cupos) return;
+
+      if (asiste.value === "No") {
+        cupos.value = "0";
+        cupos.min = "0";
+        cupos.readOnly = true;
+        cupos.disabled = true;
+        cupos.style.backgroundColor = "#ece8df";
+        cupos.style.cursor = "not-allowed";
+        if (estado) {
+          estado.style.color = "#555";
+          estado.textContent = "";
+        }
+      } else if (asiste.value === "Sí") {
+        cupos.disabled = false;
+        cupos.readOnly = false;
+        cupos.min = "1";
+        if (Number(cupos.value) < 1) {
+          cupos.value = "1";
+        }
+        cupos.style.backgroundColor = "#ffffff";
+        cupos.style.cursor = "text";
+      } else {
+        cupos.disabled = false;
+        cupos.readOnly = false;
+        cupos.min = "1";
+        cupos.style.backgroundColor = "#ffffff";
+        cupos.style.cursor = "text";
+      }
+    }
+
+    function validarCuposEnVivo() {
+      const asiste = document.getElementById("asisteInvitado");
+      const cupos = document.getElementById("cuposInvitado");
+      const estado = document.getElementById("estadoConfirmacion");
+      if (!asiste || !cupos) return;
+
+      if (asiste.value === "No") {
+        cupos.value = "0";
+        return;
+      }
+
+      if (asiste.value === "Sí") {
+        // Evita que escriban 0 o números negativos
+        if (cupos.value !== "" && Number(cupos.value) <= 0) {
+          cupos.value = "1";
+          if (estado) {
+            estado.style.color = "#9e2a2b";
+            estado.textContent = "Si asistes, debes indicar al menos 1 cupo.";
+          }
+        }
+      }
     }
     
   </script>
