@@ -185,6 +185,31 @@
       margin-top: 10px;
       display: none;
     }
+
+    .item-foto {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .pie-foto {
+      font-size: 12px;
+      color: #4f5d55;
+      line-height: 1.35;
+      text-align: center;
+    }
+    .visor-contenido {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      max-width: 95vw;
+    }
+    .visor-descripcion {
+      color: #f7f4ed;
+      font-size: 14px;
+      text-align: center;
+      max-width: 600px;
+    }
   </style>
 </head>
 <body>
@@ -251,8 +276,20 @@
       <p style="font-size: 13px; color: #666; margin-bottom: 8px;">Toca una foto para verla más grande</p>
 
       <div class="galeria-grid">
-        <img src="./img/Foto1.jpeg" alt="Foto 1" onclick="abrirZoom(this.src, this.alt)">
-        <img src="./img/Foto2.jpeg" alt="Foto 2" onclick="abrirZoom(this.src, this.alt)">
+        <div class="item-foto">
+          <img src="./img/Foto1.jpeg" alt="Foto 1" onclick="abrirZoom(this.src, this.alt, 'El día que dijimos que sí')">
+          <p class="pie-foto">El día que dijimos que sí</p>
+        </div>
+
+        <div class="item-foto">
+          <img src="./img/Foto2.jpeg" alt="Foto 2" onclick="abrirZoom(this.src, this.alt, '¡Una flor, mi flor!')">
+          <p class="pie-foto">¡Una flor, mi flor!</p>
+        </div>
+        
+        <div class="item-foto">
+          <img src="./img/Foto3.jpeg" alt="Foto 3" onclick="abrirZoom(this.src, this.alt, '¡Emprendiendo un gran viaje!')">
+          <p class="pie-foto">¡Emprendiendo un gran viaje!</p>
+        </div>
       </div>
     </section>
 
@@ -260,8 +297,14 @@
     <section style="margin-top: 28px; padding-top: 22px; border-top: 1px solid #dcd4c6;">
       <p class="subtitulo" style="margin-bottom: 6px;">Confirmar Asistencia</p>
 
-      <div id="avisoCierreRsvp" class="aviso-cierre-rsvp">
+      <!-- Aviso cuando faltan 5 días o menos (la boda aún no pasa) -->
+      <div id="avisoPocosDiasRsvp" class="aviso-cierre-rsvp">
         El plazo para confirmar asistencia ha finalizado (faltan 5 días o menos para la boda).
+      </div>
+
+      <!-- Aviso cuando la fecha de la boda ya pasó -->
+      <div id="avisoBodaPasadaRsvp" class="aviso-cierre-rsvp">
+        Nuestra boda ya se celebró, por lo que el formulario de confirmación ya no está disponible.
       </div>
 
       <a id="enlaceAbrirFormulario" href="#confirmar-asistencia" onclick="alternarFormularioBoda(event)" style="
@@ -314,12 +357,15 @@
   <!-- Visor ampliado -->
   <div id="visorZoom" class="visor-zoom" onclick="cerrarZoom(event)">
     <button type="button" class="cerrar-zoom" onclick="cerrarZoom(event)" aria-label="Cerrar">×</button>
-    <img id="imagenZoom" src="" alt="">
+    <div class="visor-contenido">
+      <img id="imagenZoom" src="" alt="">
+      <p id="descripcionZoom" class="visor-descripcion"></p>
+    </div>
   </div>
 
   <script>
     // Ajusta aquí la fecha exacta de tu boda (AAAA-MM-DDTHH:MM:SS)
-    const FECHA_BODA = "2026-11-15T00:00:00";
+    const FECHA_BODA = "2026-11-23T00:00:00";
     const DIAS_LIMITE_CONFIRMACION = 5;
     let confirmacionesCerradas = false;
 
@@ -357,14 +403,24 @@
         }
       }
 
+      const avisoPocosDias = document.getElementById("avisoPocosDiasRsvp");
+      const avisoBodaPasada = document.getElementById("avisoBodaPasadaRsvp");
+
+      if (avisoPocosDias) avisoPocosDias.style.display = "none";
+      if (avisoBodaPasada) avisoBodaPasada.style.display = "none";
+
       if (dias <= DIAS_LIMITE_CONFIRMACION) {
         confirmacionesCerradas = true;
-        if (avisoEl) avisoEl.style.display = "block";
         if (enlaceForm) enlaceForm.style.display = "none";
         if (contForm) contForm.style.display = "none";
         if (btnEnviar) btnEnviar.disabled = true;
+
+        if (dias < 0) {
+          if (avisoBodaPasada) avisoBodaPasada.style.display = "block";
+        } else {
+          if (avisoPocosDias) avisoPocosDias.style.display = "block";
+        }
       }
-    }
 
     const audio = document.getElementById("audioBoda");
     const icono = document.getElementById("iconoAudio");
@@ -396,12 +452,16 @@
       enlace.textContent = estaOculto ? "Ocultar mapa" : "Ver mapa interactivo";
     }
 
-    function abrirZoom(src, alt) {
+    function abrirZoom(src, alt, descripcion) {
       const visor = document.getElementById("visorZoom");
       const img = document.getElementById("imagenZoom");
+      const desc = document.getElementById("descripcionZoom");
       if (!visor || !img) return;
       img.src = src;
       img.alt = alt || "Foto ampliada";
+      if (desc) {
+        desc.textContent = descripcion || "";
+      }
       visor.classList.add("activo");
     }
 
