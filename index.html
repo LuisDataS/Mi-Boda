@@ -41,9 +41,27 @@
     .fecha {
       font-size: 16px;
       color: #555;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       padding-bottom: 18px;
       border-bottom: 1px solid #dcd4c6;
+    }
+    .contador-boda {
+      background-color: #efebe1;
+      border: 1px solid #d8d0c0;
+      border-radius: 16px;
+      padding: 18px 16px;
+      margin-bottom: 24px;
+    }
+    .contador-numero {
+      font-size: 46px;
+      line-height: 1.05;
+      color: #2f5d46;
+      font-weight: normal;
+      margin: 4px 0 6px;
+    }
+    .contador-texto {
+      font-size: 14px;
+      color: #4a5550;
     }
     .btn-musica {
       background-color: #2f5d46;
@@ -148,10 +166,24 @@
       cursor: pointer;
       margin-top: 4px;
     }
+    .btn-enviar-boda:disabled {
+      background-color: #8b9a92;
+      cursor: not-allowed;
+    }
     .estado-envio {
       font-size: 13px;
       margin-top: 8px;
       min-height: 18px;
+    }
+    .aviso-cierre-rsvp {
+      background-color: #f5eceb;
+      border: 1px solid #dfb8b5;
+      color: #8f2d2b;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 13px;
+      margin-top: 10px;
+      display: none;
     }
   </style>
 </head>
@@ -163,6 +195,13 @@
     <h1>&</h1>
     <h1>Luis Hernán</h1>
     <p class="fecha">Diciembre 2026</p>
+
+    <!-- Contador amplio de días para la boda -->
+    <section class="contador-boda" aria-live="polite">
+      <p class="subtitulo" style="margin-bottom: 2px;">Faltan</p>
+      <div id="numeroDiasBoda" class="contador-numero">--</div>
+      <p id="textoDiasBoda" class="contador-texto">días para nuestra boda</p>
+    </section>
 
     <!-- Reproductor de música -->
     <audio id="audioBoda" src="./CancionBoda.mp3" loop preload="auto"></audio>
@@ -221,6 +260,10 @@
     <section style="margin-top: 28px; padding-top: 22px; border-top: 1px solid #dcd4c6;">
       <p class="subtitulo" style="margin-bottom: 6px;">Confirmar Asistencia</p>
 
+      <div id="avisoCierreRsvp" class="aviso-cierre-rsvp">
+        El plazo para confirmar asistencia ha finalizado (faltan 5 días o menos para la boda).
+      </div>
+
       <a id="enlaceAbrirFormulario" href="#confirmar-asistencia" onclick="alternarFormularioBoda(event)" style="
         display: inline-block;
         color: #2f5d46;
@@ -275,6 +318,54 @@
   </div>
 
   <script>
+    // Ajusta aquí la fecha exacta de tu boda (AAAA-MM-DDTHH:MM:SS)
+    const FECHA_BODA = "2026-12-19T00:00:00";
+    const DIAS_LIMITE_CONFIRMACION = 5;
+    let confirmacionesCerradas = false;
+
+    function calcularDiasRestantes() {
+      const ahora = new Date();
+      const inicioHoy = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+      const fechaEvento = new Date(FECHA_BODA);
+      const inicioEvento = new Date(fechaEvento.getFullYear(), fechaEvento.getMonth(), fechaEvento.getDate());
+      const msPorDia = 1000 * 60 * 60 * 24;
+      return Math.ceil((inicioEvento - inicioHoy) / msPorDia);
+    }
+
+    function actualizarContadorYPlazo() {
+      const dias = calcularDiasRestantes();
+      const numEl = document.getElementById("numeroDiasBoda");
+      const txtEl = document.getElementById("textoDiasBoda");
+      const avisoEl = document.getElementById("avisoCierreRsvp");
+      const enlaceForm = document.getElementById("enlaceAbrirFormulario");
+      const contForm = document.getElementById("contenedorFormularioBoda");
+      const btnEnviar = document.getElementById("btnEnviarConfirmacion");
+
+      if (numEl && txtEl) {
+        if (dias > 1) {
+          numEl.textContent = String(dias);
+          txtEl.textContent = "días para nuestra boda";
+        } else if (dias === 1) {
+          numEl.textContent = "1";
+          txtEl.textContent = "¡Falta solo 1 día para nuestra boda!";
+        } else if (dias === 0) {
+          numEl.textContent = "¡Hoy!";
+          txtEl.textContent = "Es el gran día";
+        } else {
+          numEl.textContent = "¡Listo!";
+          txtEl.textContent = "Nuestra boda ya se celebró";
+        }
+      }
+
+      if (dias <= DIAS_LIMITE_CONFIRMACION) {
+        confirmacionesCerradas = true;
+        if (avisoEl) avisoEl.style.display = "block";
+        if (enlaceForm) enlaceForm.style.display = "none";
+        if (contForm) contForm.style.display = "none";
+        if (btnEnviar) btnEnviar.disabled = true;
+      }
+    }
+
     const audio = document.getElementById("audioBoda");
     const icono = document.getElementById("iconoAudio");
     const texto = document.getElementById("textoAudio");
@@ -330,6 +421,16 @@
       const btn = document.getElementById("btnEnviarConfirmacion");
       const estado = document.getElementById("estadoConfirmacion");
 
+      if (confirmacionesCerradas || calcularDiasRestantes() <= DIAS_LIMITE_CONFIRMACION) {
+        confirmacionesCerradas = true;
+        actualizarContadorYPlazo();
+        if (estado) {
+          estado.style.color = "#9e2a2b";
+          estado.textContent = "Ya no se permiten más confirmaciones (faltan 5 días o menos para la boda).";
+        }
+        return;
+      }
+
       const payload = {
         nombre: document.getElementById("nombreInvitado").value.trim(),
         asiste: document.getElementById("asisteInvitado").value.trim(),
@@ -383,6 +484,10 @@
 
     function alternarFormularioBoda(evento) {
       if (evento) evento.preventDefault();
+      if (confirmacionesCerradas || calcularDiasRestantes() <= DIAS_LIMITE_CONFIRMACION) {
+        actualizarContadorYPlazo();
+        return;
+      }
       const contenedor = document.getElementById("contenedorFormularioBoda");
       const enlace = document.getElementById("enlaceAbrirFormulario");
       if (!contenedor || !enlace) return;
@@ -442,6 +547,8 @@
         }
       }
     }
+
+    actualizarContadorYPlazo();
   </script>
 
 </body>
