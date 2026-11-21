@@ -6,13 +6,14 @@
   <title>Nuestra Boda</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
       background-color: #2f5d46;
       font-family: 'Georgia', serif;
       color: #2c3531;
       display: flex;
       justify-content: center;
-      padding: 24px 14px;
+      padding: 24px 14px 80px;
       min-height: 100vh;
     }
     .tarjeta {
@@ -20,10 +21,13 @@
       width: 100%;
       max-width: 480px;
       border-radius: 20px;
-      padding: 36px 24px;
+      overflow: hidden;
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
       text-align: center;
       border: 1px solid #d8d0c0;
+    }
+    .contenido-tarjeta {
+      padding: 34px 24px 24px;
     }
     .subtitulo {
       font-size: 13px;
@@ -32,12 +36,64 @@
       color: #6b7c72;
       margin-bottom: 10px;
     }
-    h1 {
-      font-size: 34px;
-      font-weight: normal;
-      color: #2f5d46;
-      margin-bottom: 16px;
+
+    /* Foto 3 al inicio con desvanecido suave en los bordes */
+    .marco-portada {
+      width: 100%;
+      max-width: 340px;
+      margin: 12px auto 18px;
+      padding: 6px;
     }
+    .foto-portada-desvanecida {
+      width: 100%;
+      max-height: 230px;
+      object-fit: cover;
+      border-radius: 18px;
+      display: block;
+      -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 58%, rgba(0,0,0,0) 100%);
+      mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 58%, rgba(0,0,0,0) 100%);
+    }
+
+    /* Corazón texturizado rojo con nombres en tono pastel claro */
+    .corazon-nombres-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 330px;
+      aspect-ratio: 1 / 0.92;
+      margin: 6px auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .corazon-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 8px 18px rgba(138, 28, 36, 0.28));
+      z-index: 1;
+    }
+    .nombres-en-corazon {
+      position: relative;
+      z-index: 2;
+      padding: 18px 26px 8px;
+      color: #fff1ec;
+      text-shadow: 0 2px 8px rgba(72, 10, 16, 0.45);
+      line-height: 1.18;
+    }
+    .nombres-en-corazon .nombre-pareja {
+      font-size: 25px;
+      font-weight: normal;
+      color: #fff1ec;
+      display: block;
+    }
+    .nombres-en-corazon .y-pareja {
+      font-size: 20px;
+      color: #ffd9cf;
+      display: block;
+      margin: 2px 0;
+    }
+
     .fecha {
       font-size: 16px;
       color: #555;
@@ -45,24 +101,47 @@
       padding-bottom: 18px;
       border-bottom: 1px solid #dcd4c6;
     }
+
+    /* Contador amplio con días, horas y minutos */
     .contador-boda {
       background-color: #efebe1;
       border: 1px solid #d8d0c0;
       border-radius: 16px;
-      padding: 18px 16px;
+      padding: 18px 14px;
       margin-bottom: 24px;
     }
-    .contador-numero {
-      font-size: 46px;
+    .contador-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .bloque-tiempo {
+      background-color: #f7f4ed;
+      border: 1px solid #dfd7c6;
+      border-radius: 12px;
+      padding: 10px 6px;
+    }
+    .bloque-tiempo .valor-tiempo {
+      font-size: 32px;
       line-height: 1.05;
       color: #2f5d46;
-      font-weight: normal;
-      margin: 4px 0 6px;
+      display: block;
+    }
+    .bloque-tiempo .etiqueta-tiempo {
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #6b7c72;
+      margin-top: 4px;
+      display: block;
     }
     .contador-texto {
       font-size: 14px;
       color: #4a5550;
+      margin-top: 10px;
     }
+
     .btn-musica {
       background-color: #2f5d46;
       color: #f7f4ed;
@@ -86,6 +165,11 @@
       gap: 10px;
       margin-top: 12px;
     }
+    .item-foto {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
     .galeria-grid img {
       width: 100%;
       height: 130px;
@@ -95,6 +179,13 @@
       border: 1px solid #d8d0c0;
       display: block;
     }
+    .pie-foto {
+      font-size: 12px;
+      color: #4f5d55;
+      line-height: 1.35;
+      text-align: center;
+    }
+
     .visor-zoom {
       display: none;
       position: fixed;
@@ -108,12 +199,25 @@
     .visor-zoom.activo {
       display: flex;
     }
+    .visor-contenido {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      max-width: 95vw;
+    }
     .visor-zoom img {
       max-width: 95vw;
-      max-height: 85vh;
+      max-height: 80vh;
       object-fit: contain;
       border-radius: 10px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    .visor-descripcion {
+      color: #f7f4ed;
+      font-size: 14px;
+      text-align: center;
+      max-width: 600px;
     }
     .cerrar-zoom {
       position: fixed;
@@ -186,186 +290,254 @@
       display: none;
     }
 
-    .item-foto {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .pie-foto {
+    /* Pie de página en verde más oscuro */
+    .pie-creador {
+      background-color: #1e4231;
+      color: #e8f0ec;
+      padding: 20px 22px;
       font-size: 12px;
-      color: #4f5d55;
-      line-height: 1.35;
-      text-align: center;
+      line-height: 1.55;
+      border-top: 1px solid #163225;
     }
-    .visor-contenido {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      max-width: 95vw;
+    .pie-creador a {
+      color: #c8e6d7;
+      text-decoration: underline;
     }
-    .visor-descripcion {
+
+    /* Botón flotante para indicar que sigue contenido hacia abajo */
+    .btn-bajar-flotante {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 900;
+      background-color: #2f5d46;
       color: #f7f4ed;
-      font-size: 14px;
-      text-align: center;
-      max-width: 600px;
+      border: 1px solid #e4decb;
+      border-radius: 999px;
+      padding: 10px 15px;
+      font-family: 'Georgia', serif;
+      font-size: 12px;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .btn-bajar-flotante:hover {
+      transform: translateY(-2px);
+    }
+    .btn-bajar-flotante.oculto {
+      opacity: 0;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
 
   <main class="tarjeta">
-    <p class="subtitulo">¡Nos Casamos!</p>
-    <h1>Sandra Isabel</h1>
-    <h1>&</h1>
-    <h1>Luis Hernán</h1>
-    <p class="fecha">Diciembre 2026</p>
+    <div class="contenido-tarjeta">
+      <p class="subtitulo">¡Nos Casamos!</p>
 
-    <!-- Contador amplio de días para la boda -->
-    <section class="contador-boda" aria-live="polite">
-      <p class="subtitulo" style="margin-bottom: 2px;">Faltan</p>
-      <div id="numeroDiasBoda" class="contador-numero">--</div>
-      <p id="textoDiasBoda" class="contador-texto">días para nuestra boda</p>
-    </section>
-
-    <!-- Reproductor de música -->
-    <audio id="audioBoda" src="./CancionBoda.mp3" loop preload="auto"></audio>
-    <button id="btnAudio" class="btn-musica" onclick="alternarMusica()">
-      <span id="iconoAudio">▶</span>
-      <span id="textoAudio">Escuchar nuestra canción</span>
-    </button>
-
-    <!-- Sección Ubicación -->
-    <section style="margin-top: 28px; padding-top: 22px; border-top: 1px solid #dcd4c6;">
-      <p class="subtitulo" style="margin-bottom: 6px;">Ubicación</p>
-      <p style="font-size: 16px; color: #2c3531; margin-bottom: 12px;">
-        <strong>Finca Hotel Santa Sofía</strong><br>
-        <span style="font-size: 14px; color: #555;">Las camelias, Dosquebradas, Risaralda</span>
-      </p>
-
-      <a id="enlaceVerMapa" href="#mapa-boda" onclick="alternarMapaBoda(event)" style="
-        display: inline-block;
-        color: #2f5d46;
-        font-size: 14px;
-        text-decoration: underline;
-        margin-bottom: 12px;
-        cursor: pointer;">
-        Ver mapa interactivo
-      </a>
-
-      <div id="contenedorMapaBoda" style="
-        display: none;
-        border-radius: 14px;
-        overflow: hidden;
-        border: 1px solid #d8d0c0;
-        margin-top: 6px;">
-        <iframe
-          id="iframeMapaBoda"
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d327.0966360751308!2d-75.70564778379044!3d4.83317042444017!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e38812c01df66ed%3A0xe9f6822cd94a4e90!2sSanta%20Sof%C3%ADa!5e1!3m2!1ses!2sco!4v1795117154590!5m2!1ses!2sco"
-          width="100%"
-          height="220"
-          style="border:0; display:block;"
-          referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
+      <!-- Foto 3 al inicio con desvanecido en los bordes -->
+      <div class="marco-portada">
+        <img src="./img/Foto3.jpeg" alt="Nuestra historia" class="foto-portada-desvanecida" onclick="abrirZoom(this.src, this.alt, 'El inicio de nuestro camino juntos')">
       </div>
-    </section>
 
-    <!-- Sección Galería con Zoom -->
-    <section style="margin-top: 28px; padding-top: 22px; border-top: 1px solid #dcd4c6;">
-      <p class="subtitulo" style="margin-bottom: 4px;">Momentos</p>
-      <p style="font-size: 13px; color: #666; margin-bottom: 8px;">Toca una foto para verla más grande</p>
+      <!-- Nombres dentro de un corazón rojo con textura y letras en tono pastel claro -->
+      <div class="corazon-nombres-wrap" aria-label="Sandra Isabel y Luis Hernán">
+        <svg class="corazon-svg" viewBox="0 0 200 184" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <radialGradient id="gradRojoCorazon" cx="45%" cy="35%" r="65%">
+              <stop offset="0%" stop-color="#d6454b"/>
+              <stop offset="65%" stop-color="#b52b34"/>
+              <stop offset="100%" stop-color="#8b1b22"/>
+            </radialGradient>
+            <pattern id="texturaLinoCorazon" width="8" height="8" patternUnits="userSpaceOnUse">
+              <path d="M 0 4 L 8 4 M 4 0 L 4 8" stroke="#ffffff" stroke-opacity="0.08" stroke-width="0.8"/>
+              <circle cx="2" cy="2" r="0.7" fill="#ffe6df" fill-opacity="0.10"/>
+            </pattern>
+            <clipPath id="recorteCorazon">
+              <path d="M100 172 C100 172 16 118 16 58 C16 28 39 10 65 10 C83 10 95 20 100 32 C105 20 117 10 135 10 C161 10 184 28 184 58 C184 118 100 172 100 172 Z"/>
+            </clipPath>
+          </defs>
+          <g clip-path="url(#recorteCorazon)">
+            <rect x="0" y="0" width="200" height="184" fill="url(#gradRojoCorazon)"/>
+            <rect x="0" y="0" width="200" height="184" fill="url(#texturaLinoCorazon)"/>
+          </g>
+          <path d="M100 172 C100 172 16 118 16 58 C16 28 39 10 65 10 C83 10 95 20 100 32 C105 20 117 10 135 10 C161 10 184 28 184 58 C184 118 100 172 100 172 Z"
+                fill="none" stroke="#f5b8ae" stroke-width="2" stroke-opacity="0.55"/>
+        </svg>
 
-      <div class="galeria-grid">
-        <div class="item-foto">
-          <img src="./img/Foto1.jpeg" alt="Foto 1" onclick="abrirZoom(this.src, this.alt, 'El día que dijimos que sí')">
-          <p class="pie-foto">El día que dijimos que sí</p>
-        </div>
-
-        <div class="item-foto">
-          <img src="./img/Foto2.jpeg" alt="Foto 2" onclick="abrirZoom(this.src, this.alt, '¡Una flor, mi flor!')">
-          <p class="pie-foto">¡Una flor, mi flor!</p>
-        </div>
-        
-        <div class="item-foto">
-          <img src="./img/Foto3.jpeg" alt="Foto 3" onclick="abrirZoom(this.src, this.alt, '¡Emprendiendo un gran viaje!')">
-          <p class="pie-foto">¡Emprendiendo un gran viaje!</p>
+        <div class="nombres-en-corazon">
+          <span class="nombre-pareja">Sandra Isabel</span>
+          <span class="y-pareja">&amp;</span>
+          <span class="nombre-pareja">Luis Hernán</span>
         </div>
       </div>
-    </section>
 
-    <!-- Sección Confirmación de Asistencia -->
-    <section style="margin-top: 28px; padding-top: 22px; border-top: 1px solid #dcd4c6;">
-      <p class="subtitulo" style="margin-bottom: 6px;">Confirmar Asistencia</p>
+      <p class="fecha">Diciembre 2026</p>
 
-      <!-- Aviso cuando faltan 5 días o menos (la boda aún no pasa) -->
-      <div id="avisoPocosDiasRsvp" class="aviso-cierre-rsvp">
-        El plazo para confirmar asistencia ha finalizado (faltan 10 días o menos para la boda).
-      </div>
+      <!-- Contador con días, horas y minutos -->
+      <section class="contador-boda" aria-live="polite">
+        <p class="subtitulo" style="margin-bottom: 2px;">Cuenta regresiva</p>
+        <div class="contador-grid">
+          <div class="bloque-tiempo">
+            <span id="diasBoda" class="valor-tiempo">--</span>
+            <span class="etiqueta-tiempo">Días</span>
+          </div>
+          <div class="bloque-tiempo">
+            <span id="horasBoda" class="valor-tiempo">--</span>
+            <span class="etiqueta-tiempo">Horas</span>
+          </div>
+          <div class="bloque-tiempo">
+            <span id="minutosBoda" class="valor-tiempo">--</span>
+            <span class="etiqueta-tiempo">Minutos</span>
+          </div>
+        </div>
+        <p id="textoDiasBoda" class="contador-texto">para nuestra boda</p>
+      </section>
 
-      <!-- Aviso cuando la fecha de la boda ya pasó -->
-      <div id="avisoBodaPasadaRsvp" class="aviso-cierre-rsvp">
-        Nuestra boda ya se celebró, por lo que el formulario de confirmación ya no está disponible.
-      </div>
+      <!-- Reproductor de música -->
+      <audio id="audioBoda" src="./CancionBoda.mp3" loop preload="auto"></audio>
+      <button id="btnAudio" class="btn-musica" onclick="alternarMusica()">
+        <span id="iconoAudio">▶</span>
+        <span id="textoAudio">Escuchar nuestra canción</span>
+      </button>
 
-      <a id="enlaceAbrirFormulario" href="#confirmar-asistencia" onclick="alternarFormularioBoda(event)" style="
-        display: inline-block;
-        color: #2f5d46;
-        font-size: 14px;
-        text-decoration: underline;
-        margin-bottom: 10px;
-        cursor: pointer;">
-        Abrir formulario de confirmación
-      </a>
+      <!-- Sección Ubicación -->
+      <section style="margin-top: 28px; padding-top: 22px; border-top: 1px solid #dcd4c6;">
+        <p class="subtitulo" style="margin-bottom: 6px;">Ubicación</p>
+        <p style="font-size: 16px; color: #2c3531; margin-bottom: 12px;">
+          <strong>Finca Hotel Santa Sofía</strong><br>
+          <span style="font-size: 14px; color: #555;">Las camelias, Dosquebradas, Risaralda</span>
+        </p>
 
-      <div id="contenedorFormularioBoda" style="display: none;">
-        <form id="formConfirmacion" class="form-boda" onsubmit="enviarConfirmacion(event)">
-          <div class="campo-boda">
-            <label for="nombreInvitado">Nombre del invitado *</label>
-            <input type="text" id="nombreInvitado" name="nombre" required placeholder="Ej. Laura Gómez">
+        <a id="enlaceVerMapa" href="#mapa-boda" onclick="alternarMapaBoda(event)" style="
+          display: inline-block;
+          color: #2f5d46;
+          font-size: 14px;
+          text-decoration: underline;
+          margin-bottom: 12px;
+          cursor: pointer;">
+          Ver mapa interactivo
+        </a>
+
+        <div id="contenedorMapaBoda" style="
+          display: none;
+          border-radius: 14px;
+          overflow: hidden;
+          border: 1px solid #d8d0c0;
+          margin-top: 6px;">
+          <iframe
+            id="iframeMapaBoda"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d327.0966360751308!2d-75.70564778379044!3d4.83317042444017!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e38812c01df66ed%3A0xe9f6822cd94a4e90!2sSanta%20Sof%C3%ADa!5e1!3m2!1ses!2sco!4v1795117154590!5m2!1ses!2sco"
+            width="100%"
+            height="220"
+            style="border:0; display:block;"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+      </section>
+
+      <!-- Sección Galería con Zoom y descripción -->
+      <section style="margin-top: 28px; padding-top: 22px; border-top: 1px solid #dcd4c6;">
+        <p class="subtitulo" style="margin-bottom: 4px;">Momentos</p>
+        <p style="font-size: 13px; color: #666; margin-bottom: 8px;">Toca una foto para verla más grande</p>
+
+        <div class="galeria-grid">
+          <div class="item-foto">
+            <img src="./img/Foto2.jpeg" alt="Foto 2" onclick="abrirZoom(this.src, this.alt, 'Nuestro primer viaje juntos')">
+            <p class="pie-foto">Nuestro primer viaje juntos</p>
           </div>
 
-          <div class="campo-boda">
-            <label for="asisteInvitado">¿Asistes? *</label>
-            <select id="asisteInvitado" name="asiste" required onchange="ajustarCuposPorAsistencia()">
-              <option value="">Selecciona una opción</option>
-              <option value="Sí">Sí</option>
-              <option value="No">No</option>
-            </select>
+          <div class="item-foto">
+            <img src="./img/Foto1.jpeg" alt="Foto 1" onclick="abrirZoom(this.src, this.alt, '¡El día que dijimos que sí!')">
+            <p class="pie-foto">¡El día que dijimos que sí!</p>
           </div>
+        </div>
+      </section>
 
-          <div class="campo-boda">
-            <label for="cuposInvitado">Cupos *</label>
-            <input type="number" id="cuposInvitado" name="cupos" min="1" max="5" value="1" required oninput="validarCuposEnVivo()">
-          </div>
+      <!-- Sección Confirmación de Asistencia -->
+      <section id="seccion-confirmacion" style="margin-top: 28px; padding-top: 22px; border-top: 1px solid #dcd4c6;">
+        <p class="subtitulo" style="margin-bottom: 6px;">Confirmar Asistencia</p>
 
-          <div class="campo-boda">
-            <label for="mensajeInvitado">Mensaje (Opcional)</label>
-            <textarea id="mensajeInvitado" name="mensaje" rows="3" placeholder="Escribe un mensaje o dedicatoria..."></textarea>
-          </div>
+        <!-- Aviso cuando faltan 5 días o menos (la boda aún no pasa) -->
+        <div id="avisoPocosDiasRsvp" class="aviso-cierre-rsvp">
+          El plazo para confirmar asistencia ha finalizado (faltan 5 días o menos para la boda).
+        </div>
 
-          <button type="submit" id="btnEnviarConfirmacion" class="btn-enviar-boda">
-            Enviar confirmación
-          </button>
+        <!-- Aviso cuando la fecha de la boda ya pasó -->
+        <div id="avisoBodaPasadaRsvp" class="aviso-cierre-rsvp">
+          Nuestra boda ya se celebró, por lo que el formulario de confirmación ya no está disponible.
+        </div>
 
-          <p id="estadoConfirmacion" class="estado-envio"></p>
-        </form>
-      </div>
-    </section>
+        <a id="enlaceAbrirFormulario" href="#confirmar-asistencia" onclick="alternarFormularioBoda(event)" style="
+          display: inline-block;
+          color: #2f5d46;
+          font-size: 14px;
+          text-decoration: underline;
+          margin-bottom: 10px;
+          cursor: pointer;">
+          Abrir formulario de confirmación
+        </a>
 
-    <!-- Pie de página del creador -->
-    <footer style="margin-top: 28px; padding-top: 18px; border-top: 1px solid #dcd4c6; font-size: 12px; color: #6b7c72; line-height: 1.5;">
+        <div id="contenedorFormularioBoda" style="display: none;">
+          <form id="formConfirmacion" class="form-boda" onsubmit="enviarConfirmacion(event)">
+            <div class="campo-boda">
+              <label for="nombreInvitado">Nombre del invitado *</label>
+              <input type="text" id="nombreInvitado" name="nombre" required placeholder="Ej. Laura Gómez">
+            </div>
+
+            <div class="campo-boda">
+              <label for="asisteInvitado">¿Asistes? *</label>
+              <select id="asisteInvitado" name="asiste" required onchange="ajustarCuposPorAsistencia()">
+                <option value="">Selecciona una opción</option>
+                <option value="Sí">Sí</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+
+            <div class="campo-boda">
+              <label for="cuposInvitado">Cupos *</label>
+              <input type="number" id="cuposInvitado" name="cupos" min="1" max="5" value="1" required oninput="validarCuposEnVivo()">
+            </div>
+
+            <div class="campo-boda">
+              <label for="mensajeInvitado">Mensaje (Opcional)</label>
+              <textarea id="mensajeInvitado" name="mensaje" rows="3" placeholder="Escribe un mensaje o dedicatoria..."></textarea>
+            </div>
+
+            <button type="submit" id="btnEnviarConfirmacion" class="btn-enviar-boda">
+              Enviar confirmación
+            </button>
+
+            <p id="estadoConfirmacion" class="estado-envio"></p>
+          </form>
+        </div>
+      </section>
+    </div>
+
+    <!-- Pie de página con tono verde más oscuro -->
+    <footer id="pie-creador" class="pie-creador">
       <p>
-        Invitación digital diseñada y desarrollada por <strong>LuisDataS</strong>.
+        Invitación web diseñada y desarrollada por <strong>Datos & Servicios</strong>.
+      </p>
+      <p>
+        ¿Deseas una invitación o desarrollo web a medida? Escríbeme a>.
       </p>
       <p style="margin-top: 4px;">
-        ¿Deseas una invitación o desarrollo web a medida?
-        Escríbeme a <a href="mailto:feroca77@gmail.com" style="color: #2f5d46; text-decoration: underline;">feroca77@gmail.com</a>
-        o via WhatsApp: <a style="color: #2f5d46; text-decoration: underline;">+57 321 3059574</a>.
-        <!-- o visita <a href="https://github.com/LuisDataS" target="_blank" rel="noopener" style="color: #2f5d46; text-decoration: underline;">github.com/LuisDataS</a>. -->
+        Contacto: <a href="mailto:feroca77@gmail.com">feroca77@gmail.com</a> ·
+        <a href="https://github.com/LuisDataS" target="_blank" rel="noopener">github.com/LuisDataS</a>
       </p>
     </footer>
-
   </main>
+
+  <!-- Botón flotante para bajar y ver más contenido -->
+  <button type="button" id="btnBajarFlotante" class="btn-bajar-flotante" onclick="bajarContenido()" aria-label="Ver más contenido abajo">
+    <span>Más abajo</span>
+    <span>↓</span>
+  </button>
 
   <!-- Visor ampliado -->
   <div id="visorZoom" class="visor-zoom" onclick="cerrarZoom(event)">
@@ -377,62 +549,101 @@
   </div>
 
   <script>
-    // Ajusta aquí la fecha exacta de tu boda (AAAA-MM-DDTHH:MM:SS)
-    const FECHA_BODA = "2026-12-19T00:00:00";
-    const DIAS_LIMITE_CONFIRMACION = 9;
+    // Ajusta aquí la fecha y hora exacta de tu boda (AAAA-MM-DDTHH:MM:SS)
+    const FECHA_BODA = "2026-12-19T15:00:00";
+    const DIAS_LIMITE_CONFIRMACION = 10;
     let confirmacionesCerradas = false;
 
-    function calcularDiasRestantes() {
+    function calcularTiempoRestante() {
       const ahora = new Date();
-      const inicioHoy = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
-      const fechaEvento = new Date(FECHA_BODA);
-      const inicioEvento = new Date(fechaEvento.getFullYear(), fechaEvento.getMonth(), fechaEvento.getDate());
+      const objetivo = new Date(FECHA_BODA);
+      const diferenciaMs = objetivo - ahora;
       const msPorDia = 1000 * 60 * 60 * 24;
-      return Math.ceil((inicioEvento - inicioHoy) / msPorDia);
+      const diasCalendario = Math.ceil(diferenciaMs / msPorDia);
+
+      if (diferenciaMs <= 0) {
+        return {
+          finalizado: true,
+          diasCalendario,
+          dias: 0,
+          horas: 0,
+          minutos: 0
+        };
+      }
+
+      const totalMinutos = Math.floor(diferenciaMs / (1000 * 60));
+      const dias = Math.floor(totalMinutos / (60 * 24));
+      const horas = Math.floor((totalMinutos % (60 * 24)) / 60);
+      const minutos = totalMinutos % 60;
+
+      return {
+        finalizado: false,
+        diasCalendario,
+        dias,
+        horas,
+        minutos
+      };
     }
 
     function actualizarContadorYPlazo() {
-      const dias = calcularDiasRestantes();
-      const numEl = document.getElementById("numeroDiasBoda");
+      const info = calcularTiempoRestante();
+      const diasEl = document.getElementById("diasBoda");
+      const horasEl = document.getElementById("horasBoda");
+      const minutosEl = document.getElementById("minutosBoda");
       const txtEl = document.getElementById("textoDiasBoda");
-      const avisoEl = document.getElementById("avisoCierreRsvp");
+
       const enlaceForm = document.getElementById("enlaceAbrirFormulario");
       const contForm = document.getElementById("contenedorFormularioBoda");
       const btnEnviar = document.getElementById("btnEnviarConfirmacion");
-
-      if (numEl && txtEl) {
-        if (dias > 1) {
-          numEl.textContent = String(dias);
-          txtEl.textContent = "días para nuestra boda";
-        } else if (dias === 1) {
-          numEl.textContent = "1";
-          txtEl.textContent = "¡Falta solo 1 día para nuestra boda!";
-        } else if (dias === 0) {
-          numEl.textContent = "¡Hoy!";
-          txtEl.textContent = "Es el gran día";
-        } else {
-          numEl.textContent = "¡Listo!";
-          txtEl.textContent = "Nuestra boda ya se celebró";
-        }
-      }
-
       const avisoPocosDias = document.getElementById("avisoPocosDiasRsvp");
       const avisoBodaPasada = document.getElementById("avisoBodaPasadaRsvp");
+
+      if (diasEl && horasEl && minutosEl && txtEl) {
+        if (info.finalizado) {
+          diasEl.textContent = "0";
+          horasEl.textContent = "0";
+          minutosEl.textContent = "0";
+          txtEl.textContent = "Nuestra boda ya se celebró";
+        } else {
+          diasEl.textContent = String(info.dias);
+          horasEl.textContent = String(info.horas).padStart(2, "0");
+          minutosEl.textContent = String(info.minutos).padStart(2, "0");
+          txtEl.textContent = "para nuestra boda";
+        }
+      }
 
       if (avisoPocosDias) avisoPocosDias.style.display = "none";
       if (avisoBodaPasada) avisoBodaPasada.style.display = "none";
 
-      if (dias <= DIAS_LIMITE_CONFIRMACION) {
+      if (info.finalizado || info.diasCalendario <= DIAS_LIMITE_CONFIRMACION) {
         confirmacionesCerradas = true;
         if (enlaceForm) enlaceForm.style.display = "none";
         if (contForm) contForm.style.display = "none";
         if (btnEnviar) btnEnviar.disabled = true;
 
-        if (dias < 0) {
+        if (info.finalizado || info.diasCalendario < 0) {
           if (avisoBodaPasada) avisoBodaPasada.style.display = "block";
         } else {
           if (avisoPocosDias) avisoPocosDias.style.display = "block";
         }
+      }
+    }
+
+    function bajarContenido() {
+      window.scrollBy({
+        top: Math.round(window.innerHeight * 0.75),
+        behavior: "smooth"
+      });
+    }
+
+    function actualizarBotonFlotante() {
+      const btn = document.getElementById("btnBajarFlotante");
+      if (!btn) return;
+      const cercaDelFinal = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 90);
+      if (cercaDelFinal) {
+        btn.classList.add("oculto");
+      } else {
+        btn.classList.remove("oculto");
       }
     }
 
@@ -494,8 +705,9 @@
       const form = document.getElementById("formConfirmacion");
       const btn = document.getElementById("btnEnviarConfirmacion");
       const estado = document.getElementById("estadoConfirmacion");
+      const infoActual = calcularTiempoRestante();
 
-      if (confirmacionesCerradas || calcularDiasRestantes() <= DIAS_LIMITE_CONFIRMACION) {
+      if (confirmacionesCerradas || infoActual.finalizado || infoActual.diasCalendario <= DIAS_LIMITE_CONFIRMACION) {
         confirmacionesCerradas = true;
         actualizarContadorYPlazo();
         if (estado) {
@@ -558,7 +770,8 @@
 
     function alternarFormularioBoda(evento) {
       if (evento) evento.preventDefault();
-      if (confirmacionesCerradas || calcularDiasRestantes() <= DIAS_LIMITE_CONFIRMACION) {
+      const infoActual = calcularTiempoRestante();
+      if (confirmacionesCerradas || infoActual.finalizado || infoActual.diasCalendario <= DIAS_LIMITE_CONFIRMACION) {
         actualizarContadorYPlazo();
         return;
       }
@@ -622,7 +835,11 @@
       }
     }
 
+    window.addEventListener("scroll", actualizarBotonFlotante, { passive: true });
     actualizarContadorYPlazo();
+    actualizarBotonFlotante();
+    setInterval(actualizarContadorYPlazo, 60000);
   </script>
+
 </body>
 </html>
