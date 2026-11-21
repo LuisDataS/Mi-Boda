@@ -37,29 +37,23 @@
       margin-bottom: 10px;
     }
 
-  /* Foto 3 al inicio con borde difuminado sin recortar contenido */
+  /* Foto 3 al inicio con marco limpio y línea decorativa (sin desvanecido) */
     .marco-portada {
-      position: relative;
       width: 100%;
       max-width: 340px;
       margin: 12px auto 18px;
+      padding: 6px;
+      background-color: #f7f4ed;
+      border: 1px solid #c9bfa9;
       border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-    }
-    .marco-portada::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 18px;
-      box-shadow: inset 0 0 22px 10px #f7f4ed;
-      pointer-events: none;
+      box-shadow: 0 6px 16px rgba(44, 53, 49, 0.12);
     }
     .foto-portada-desvanecida {
       width: 100%;
       max-height: 240px;
-      object-fit: cover;
+      object-fit: contain;
       object-position: center;
+      border-radius: 13px;
       display: block;
     }
 
@@ -99,6 +93,37 @@
       color: #c6363f;
       display: block;
       margin: 2px 0;
+    }
+
+    /* Mensaje de los novios después del corazón */
+    .carta-novios {
+      text-align: left;
+      font-size: 14.5px;
+      line-height: 1.62;
+      color: #35403b;
+      margin: 14px 0 20px;
+      padding: 16px 16px 14px;
+      background-color: #efebe1;
+      border-left: 3px solid #2f5d46;
+      border-radius: 12px;
+    }
+    .carta-novios p {
+      margin-bottom: 11px;
+    }
+    .carta-novios .firma-novios {
+      margin-top: 14px;
+      margin-bottom: 12px;
+      color: #2f5d46;
+      font-style: italic;
+    }
+    .carta-novios .frase-cierre-novios {
+      margin-bottom: 0;
+      padding-top: 10px;
+      border-top: 1px solid #dcd4c6;
+      font-size: 13.5px;
+      text-align: center;
+      color: #4a5550;
+      font-style: italic;
     }
 
     .fecha {
@@ -374,6 +399,26 @@
           <span class="nombre-pareja">Luis Hernán</span>
         </div>
       </div>
+
+      <!-- Mensaje de los novios después del corazón -->
+      <section class="carta-novios" aria-label="Mensaje de los novios">
+        <p>Con el corazón lleno de amor y gratitud a Dios, queremos compartir contigo una de las decisiones más bonitas de nuestras vidas.</p>
+
+        <p>Hemos decidido unir nuestros caminos y sellar ante Dios y la vida nuestro compromiso de acompañarnos en este maravilloso viaje llamado matrimonio.</p>
+
+        <p>Un viaje en el que elegimos caminar juntos, construir sueños, compartir alegrías, superar dificultades y cultivar cada día el amor, la paz, el respeto, la ternura y la complicidad.</p>
+
+        <p>Queremos que hagas parte de este día tan especial, en el que celebraremos nuestra unión y el comienzo de una nueva historia juntos.</p>
+
+        <p class="firma-novios">
+          Con cariño,<br>
+          <strong>Sandra y Luis 🤍</strong>
+        </p>
+
+        <p class="frase-cierre-novios">
+          El amor no es solamente encontrarse, es elegir caminar juntos cada día.
+        </p>
+      </section>
 
       <p class="fecha">Sábado 19 de Diciembre 2026</p>
 
