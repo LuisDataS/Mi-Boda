@@ -828,46 +828,6 @@
       };
     }
 
-    function generarCorazonDeCorazones() {
-      const grupo = document.getElementById("grupoCorazoncitos");
-      if (!grupo) return;
-      grupo.innerHTML = "";
-
-      const tonosRojos = ["#c92a37", "#e03131", "#a61e2a", "#d6336c", "#b02532"];
-      const rutaCorazonMini = "M 0 6 C 0 6 -10 -1 -10 -6 C -10 -9.5 -7.2 -12 -4 -12 C -1.8 -12 -0.5 -10.8 0 -9.2 C 0.5 -10.8 1.8 -12 4 -12 C 7.2 -12 10 -9.5 10 -6 C 10 -1 0 6 0 6 Z";
-
-      // Recorremos el contorno de un corazón grande para ubicar corazoncitos alrededor
-      // y un segundo anillo interior más suave
-      const anillos = [
-        { escalaX: 8.8, escalaY: 8.2, centroY: 148, cantidad: 52, tamMini: 1.05 },
-        { escalaX: 6.7, escalaY: 6.2, centroY: 152, cantidad: 34, tamMini: 0.85 }
-      ];
-
-      anillos.forEach((anillo, idxAnillo) => {
-        for (let i = 0; i < anillo.cantidad; i++) {
-          const t = (i / anillo.cantidad) * Math.PI * 2;
-          const hx = 16 * Math.pow(Math.sin(t), 3);
-          const hy = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
-
-          const x = 160 + hx * anillo.escalaX;
-          const y = anillo.centroY + hy * anillo.escalaY;
-
-          // Leve variación orgánica para que no se vea rígido
-          const rotacion = ((i * 29 + idxAnillo * 47) % 50) - 25;
-          const escala = anillo.tamMini * (0.85 + ((i % 4) * 0.1));
-          const color = tonosRojos[(i + idxAnillo) % tonosRojos.length];
-
-          const useEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
-          useEl.setAttribute("d", rutaCorazonMini);
-          useEl.setAttribute("fill", color);
-          useEl.setAttribute("fill-opacity", idxAnillo === 0 ? "0.95" : "0.78");
-          useEl.setAttribute("transform", `translate(${x.toFixed(1)}, ${y.toFixed(1)}) rotate(${rotacion}) scale(${escala.toFixed(2)})`);
-          grupo.appendChild(useEl);
-        }
-      });
-    }
-
-    generarCorazonDeCorazones();
     
     function actualizarContadorYPlazo() {
       const info = calcularTiempoRestante();
