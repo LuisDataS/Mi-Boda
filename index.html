@@ -57,42 +57,56 @@
       display: block;
     }
 
-    /* Corazón formado por múltiples corazoncitos rojos con nombres en el centro */
-    .corazon-nombres-wrap {
+    /* Nombres dentro de una cinta elegante con letras en verde oscuro */
+    .cinta-nombres-wrap {
       position: relative;
-      width: 100%;
-      max-width: 340px;
-      aspect-ratio: 1 / 0.95;
-      margin: 6px auto 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      margin: 10px auto 18px;
+      max-width: 360px;
+      padding: 6px 12px;
     }
-    .corazon-svg {
+    .cinta-principal {
+      position: relative;
+      background-color: #ece6d8;
+      border-top: 1.5px solid #c5b9a2;
+      border-bottom: 1.5px solid #c5b9a2;
+      border-radius: 10px;
+      padding: 14px 18px;
+      box-shadow: 0 6px 16px rgba(47, 93, 70, 0.12);
+    }
+    .cinta-principal::before,
+    .cinta-principal::after {
+      content: "";
       position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 10px;
+      height: 70%;
+      background-color: #dcd3c0;
+      border: 1px solid #c5b9a2;
+      border-radius: 3px;
     }
-    .nombres-en-corazon {
-      position: relative;
-      z-index: 2;
-      padding: 16px 24px 6px;
-      line-height: 1.18;
+    .cinta-principal::before {
+      left: -6px;
+    }
+    .cinta-principal::after {
+      right: -6px;
+    }
+    .nombres-cinta-texto {
+      color: #2f5d46;
+      line-height: 1.15;
       text-align: center;
     }
-    .nombres-en-corazon .nombre-pareja {
-      font-size: 24px;
+    .nombres-cinta-texto .nombre-pareja {
+      font-size: 25px;
       font-weight: normal;
-      color: #8f1d24;
+      color: #2f5d46;
       display: block;
     }
-    .nombres-en-corazon .y-pareja {
+    .nombres-cinta-texto .y-pareja {
       font-size: 20px;
-      color: #c6363f;
+      color: #557a67;
       display: block;
-      margin: 2px 0;
+      margin: 3px 0;
     }
 
     /* Mensaje de los novios después del corazón */
@@ -482,26 +496,19 @@
         <img src="./img/Foto4.jpeg" alt="Nuestra historia" class="foto-portada-desvanecida" onclick="abrirZoom(this.src, this.alt, 'El inicio de nuestro camino juntos')">
       </div>
 
-      <!-- Nombres dentro de un corazón formado por corazoncitos rojos -->
-      <div class="corazon-nombres-wrap" aria-label="Sandra Isabel y Luis Hernán">
-        <svg id="svgCorazonConfeti" class="corazon-svg" viewBox="0 0 320 304" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <defs>
-            <radialGradient id="centroSuaveCorazon" cx="50%" cy="50%" r="52%">
-              <stop offset="0%" stop-color="#fffaf5" stop-opacity="0.96"/>
-              <stop offset="75%" stop-color="#f7f4ed" stop-opacity="0.88"/>
-              <stop offset="100%" stop-color="#f7f4ed" stop-opacity="0"/>
-            </radialGradient>
-          </defs>
-          <!-- Capa donde se dibujarán los corazoncitos rojos -->
-          <g id="grupoCorazoncitos"></g>
-          <!-- Halo suave al centro para dar buen contraste a los nombres -->
-          <ellipse cx="160" cy="156" rx="88" ry="66" fill="url(#centroSuaveCorazon)"/>
-        </svg>
+            <!-- Foto anillos -->
+      <div class="marco-portada">
+        <img src="./img/anillos.jpeg" alt="Nuestra historia" class="foto-portada-desvanecida" onclick="abrirZoom(this.src, this.alt, 'El inicio de nuestro camino juntos')">
+      </div>
 
-        <div class="nombres-en-corazon">
-          <span class="nombre-pareja">Sandra Isabel</span>
-          <span class="y-pareja">&amp;</span>
-          <span class="nombre-pareja">Luis Hernán</span>
+      <!-- Nombres dentro de una cinta con letras en verde oscuro -->
+      <div class="cinta-nombres-wrap" aria-label="Sandra Isabel y Luis Hernán">
+        <div class="cinta-principal">
+          <div class="nombres-cinta-texto">
+            <span class="nombre-pareja">Sandra Isabel</span>
+            <span class="y-pareja">&amp;</span>
+            <span class="nombre-pareja">Luis Hernán</span>
+          </div>
         </div>
       </div>
 
