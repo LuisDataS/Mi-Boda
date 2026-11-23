@@ -17,6 +17,41 @@
       padding: 24px 14px 80px;
       min-height: 100vh;
     }
+
+    /* Encabezado superior botánico con marco dorado sutil */
+    .encabezado-floral {
+      position: relative;
+      background: linear-gradient(180deg, #faf7f0 0%, #f7f4ed 100%);
+      padding: 28px 22px 12px;
+      border-bottom: 1px solid #e4dccb;
+    }
+    .marco-dorado-superior {
+      position: relative;
+      border-top: 1.5px solid #c8a96e;
+      border-left: 1.5px solid #c8a96e;
+      border-right: 1.5px solid #c8a96e;
+      border-top-left-radius: 14px;
+      border-top-right-radius: 14px;
+      padding: 26px 14px 10px;
+    }
+    .flores-svg-top {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% + 28px);
+      max-width: 470px;
+      height: 110px;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .encabezado-floral .subtitulo {
+      position: relative;
+      z-index: 3;
+      margin-top: 14px;
+      margin-bottom: 4px;
+    }
+    
     .tarjeta {
       background-color: #f7f4ed;
       width: 100%;
@@ -493,7 +528,70 @@
 
   <main class="tarjeta">
     <div class="contenido-tarjeta">
-      <p class="subtitulo">¡Te invitamos a nuestra Boda!</p>
+      
+    <!-- Encabezado superior con flores blancas, hojas verdes y borde dorado -->
+    <header class="encabezado-floral">
+      <div class="marco-dorado-superior">
+        <svg class="flores-svg-top" viewBox="0 0 460 115" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <radialGradient id="petaloBlanco" cx="50%" cy="35%" r="65%">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="75%" stop-color="#f7f3ea"/>
+              <stop offset="100%" stop-color="#e3dccb"/>
+            </radialGradient>
+            <linearGradient id="hojaVerde" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#6b8f71"/>
+              <stop offset="100%" stop-color="#2f5d46"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Ramas y hojas verdes a izquierda y derecha -->
+          <g fill="url(#hojaVerde)" opacity="0.92">
+            <path d="M24 38 C42 18, 72 16, 95 28 C72 34, 46 38, 24 38 Z"/>
+            <path d="M48 52 C66 34, 94 34, 116 46 C92 52, 68 54, 48 52 Z"/>
+            <path d="M118 22 C136 8, 162 10, 180 24 C158 28, 136 28, 118 22 Z"/>
+            <path d="M436 38 C418 18, 388 16, 365 28 C388 34, 414 38, 436 38 Z"/>
+            <path d="M412 52 C394 34, 366 34, 344 46 C368 52, 392 54, 412 52 Z"/>
+            <path d="M342 22 C324 8, 298 10, 280 24 C302 28, 324 28, 342 22 Z"/>
+          </g>
+
+          <!-- Tallos finos -->
+          <path d="M18 32 Q115 14 230 22 Q345 14 442 32" fill="none" stroke="#6f7d68" stroke-width="1.2" opacity="0.65"/>
+
+          <!-- Flor blanca izquierda -->
+          <g transform="translate(96, 34)">
+            <ellipse cx="0" cy="-14" rx="9" ry="14" fill="url(#petaloBlanco)" stroke="#dfd6c3" stroke-width="0.7"/>
+            <ellipse cx="13" cy="-5" rx="9" ry="14" transform="rotate(72 13 -5)" fill="url(#petaloBlanco)" stroke="#dfd6c3" stroke-width="0.7"/>
+            <ellipse cx="8" cy="12" rx="9" ry="14" transform="rotate(144 8 12)" fill="url(#petaloBlanco)" stroke="#dfd6c3" stroke-width="0.7"/>
+            <ellipse cx="-8" cy="12" rx="9" ry="14" transform="rotate(216 -8 12)" fill="url(#petaloBlanco)" stroke="#dfd6c3" stroke-width="0.7"/>
+            <ellipse cx="-13" cy="-5" rx="9" ry="14" transform="rotate(288 -13 -5)" fill="url(#petaloBlanco)" stroke="#dfd6c3" stroke-width="0.7"/>
+            <circle cx="0" cy="0" r="5" fill="#e5be6a"/>
+          </g>
+
+          <!-- Flor blanca derecha -->
+          <g transform="translate(364, 34)">
+            <ellipse cx="0" cy="-14" rx="9" ry="14" fill="url(#petaloBlanco)" stroke="#dfd6c3" stroke-width="0.7"/>
+            <ellipse cx="13" cy="-5" rx="9" ry="14" transform="rotate(72 13 -5)" fill="url(#petaloBlanco)" stroke="#dfd6c3" stroke-width="0.7"/>
+            <ellipse cx="8" cy="12" rx="9" ry="14" transform="rotate(144 8 12)" fill="url(#petaloBlanco)" stroke="#dfd6c3" stroke-width="0.7"/>
+            <ellipse cx="-8" cy="12" rx="9" ry="14" transform="rotate(216 -8 12)" fill="url(#petaloBlanco)" stroke="#dfd6c3" stroke-width="0.7"/>
+            <ellipse cx="-13" cy="-5" rx="9" ry="14" transform="rotate(288 -13 -5)" fill="url(#petaloBlanco)" stroke="#dfd6c3" stroke-width="0.7"/>
+            <circle cx="0" cy="0" r="5" fill="#e5be6a"/>
+          </g>
+
+          <!-- Flor central más pequeña -->
+          <g transform="translate(230, 22) scale(0.72)">
+            <ellipse cx="0" cy="-13" rx="8" ry="13" fill="url(#petaloBlanco)" stroke="#dfd6c3" stroke-width="0.8"/>
+            <ellipse cx="12" cy="-4" rx="8" ry="13" transform="rotate(72 12 -4)" fill="url(#petaloBlanco)" stroke="#dfd6c3" stroke-width="0.8"/>
+            <ellipse cx="7" cy="11" rx="8" ry="13" transform="rotate(144 7 11)" fill="url(#petaloBlanco)" stroke="#dfd6c3" stroke-width="0.8"/>
+            <ellipse cx="-7" cy="11" rx="8" ry="13" transform="rotate(216 -7 11)" fill="url(#petaloBlanco)" stroke="#dfd6c3" stroke-width="0.8"/>
+            <ellipse cx="-12" cy="-4" rx="8" ry="13" transform="rotate(288 -12 -4)" fill="url(#petaloBlanco)" stroke="#dfd6c3" stroke-width="0.8"/>
+            <circle cx="0" cy="0" r="4.5" fill="#e5be6a"/>
+          </g>
+        </svg>
+
+        <p class="subtitulo">¡Te invitamos a nuestra Boda!</p>
+      </div>
+    </header>
 
       <!-- Foto 3 al inicio con desvanecido en los bordes -->
       <div class="marco-portada">
