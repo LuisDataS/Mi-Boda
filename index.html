@@ -557,7 +557,7 @@
       </section>
 
       <!-- Reproductor de música -->
-      <audio id="audioBoda" src="./CancionBoda.mp3" loop preload="auto"></audio>
+      <audio id="audioBoda" src="./CancionBoda.mp3" autoplay loop preload="auto"></audio>
       <button id="btnAudio" class="btn-musica" onclick="alternarMusica()">
         <span id="iconoAudio">▶</span>
         <span id="textoAudio">Escuchar nuestra canción</span>
@@ -895,24 +895,61 @@
       }
     }
 
-    const audio = document.getElementById("audioBoda");
+const audio = document.getElementById("audioBoda");
     const icono = document.getElementById("iconoAudio");
     const texto = document.getElementById("textoAudio");
+    let pausadoManualmente = false;
+
+    function marcarReproduciendo() {
+      if (icono) icono.textContent = "❚❚";
+      if (texto) texto.textContent = "Pausar música";
+    }
+
+    function marcarPausado(textoBoton = "Reanudar música") {
+      if (icono) icono.textContent = "▶";
+      if (texto) texto.textContent = textoBoton;
+    }
+
+    function intentarAutoplayMusica() {
+      if (!audio || pausadoManualmente) return;
+
+      audio.play().then(() => {
+        marcarReproduciendo();
+      }).catch(() => {
+        // Muchos celulares y navegadores bloquean el sonido automático sin interacción previa.
+        // Dejamos listo el primer toque/clic en la página para iniciar en silencio elegante o al interactuar.
+        marcarPausado("Escuchar nuestra canción");
+      });
+    }
 
     function alternarMusica() {
+      if (!audio) return;
+
       if (audio.paused) {
+        pausadoManualmente = false;
         audio.play().then(() => {
-          icono.textContent = "❚❚";
-          texto.textContent = "Pausar música";
+          marcarReproduciendo();
         }).catch(() => {
-          texto.textContent = "Toca de nuevo para sonar";
+          marcarPausado("Toca de nuevo para sonar");
         });
       } else {
+        pausadoManualmente = true;
         audio.pause();
-        icono.textContent = "▶";
-        texto.textContent = "Reanudar música";
+        marcarPausado("Reanudar música");
       }
     }
+
+    // Si el navegador bloqueó el autoplay al cargar, al primer clic o toque en la página intenta sonar
+    function activarEnPrimeraInteraccion() {
+      if (!audio || pausadoManualmente || !audio.paused) return;
+      audio.play().then(() => {
+        marcarReproduciendo();
+      }).catch(() => {});
+    }
+
+    document.addEventListener("click", activarEnPrimeraInteraccion, { once: true });
+    document.addEventListener("touchstart", activarEnPrimeraInteraccion, { once: true, passive: true });
+    window.addEventListener("DOMContentLoaded", intentarAutoplayMusica);
 
     function alternarMapaBoda(evento) {
       if (evento) evento.preventDefault();
