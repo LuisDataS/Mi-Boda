@@ -519,11 +519,12 @@
       margin-top: 8px;
     }
 
-    @media (min-width: 600px) {
+    @media (min-width: 601px) {
       .encabezado-floral {
         padding-top: 165px; /* Súbelo a 175px o 185px si quieres aún más espacio */
       }
       .cinta-nombres-wrap {
+        max-width: 440px; /* Ajusta a 480px o 100% si la quieres aún más ancha */
         display: flex;
         justify-content: center;
         align-items: center;
@@ -532,6 +533,12 @@
         margin-right: auto;
         left: 0;
         right: 0;
+      }
+      .cinta-nombres-wrap .cinta-nombres,
+      .cinta-nombres-wrap > div {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
       }
     }
 
