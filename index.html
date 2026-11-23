@@ -22,7 +22,7 @@
       flex: 0 0 100%;
       max-width: 100%;
       grid-column: 1 / -1;
-      margin: 0 0 14px 0;
+      margin: 0;
       width: 100%;
       background-color: #f7f4ed;
       background-image: url('./img/flores-top.png');
@@ -32,7 +32,7 @@
       border-top-left-radius: inherit;
       border-top-right-radius: inherit;
       overflow: hidden;
-      padding: 185px 20px 18px;
+      padding: 138px 18px 10px;
       border-bottom: 1px solid #e4dccb;
       text-align: center;
       box-sizing: border-box;
@@ -40,7 +40,8 @@
 
     .encabezado-floral .subtitulo {
       margin: 0;
-      font-size: 21px;
+      font-size: 20px;
+      line-height: 1.35;
       color: #2f5d46;
       letter-spacing: 2px;
       text-transform: uppercase;
@@ -57,7 +58,7 @@
       border: 1px solid #d8d0c0;
     }
     .contenido-tarjeta {
-      padding: 34px 24px 24px;
+      padding-top: 12px; /* Evita un salto enorme antes del siguiente bloque */
     }
     .subtitulo {
       font-size: 13px;
@@ -93,7 +94,8 @@
     /* Nombres dentro de una cinta elegante con letras en verde oscuro */
     .cinta-nombres-wrap {
       position: relative;
-      margin: 10px auto 18px;
+      margin-top: 10px; /* Acerca los nombres al bloque anterior */
+      margin-bottom: 14px;
       max-width: 360px;
       padding: 6px 12px;
     }
