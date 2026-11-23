@@ -153,7 +153,7 @@
       margin: 14px 0 20px;
       padding: 16px 16px 14px;
       background-color: #efebe1;
-      border-left: 5px solid #2f5d46;
+      border-left: 3px solid #2f5d46;
       border-radius: 12px;
     }
     .carta-novios p {
@@ -519,6 +519,21 @@
       margin-top: 8px;
     }
 
+    /* Espacio exterior a izquierda y derecha para todas las secciones */
+    section {
+      margin-left: 16px;
+      margin-right: 16px;
+      box-sizing: border-box;
+    }
+
+    /* En computador: aún más aire lateral */
+    @media (min-width: 601px) {
+      section {
+        margin-left: 32px;
+        margin-right: 32px;
+      }
+    }
+
     @media (min-width: 601px) {
       .encabezado-floral {
         padding-top: 165px; /* Súbelo a 175px o 185px si quieres aún más espacio */
@@ -834,6 +849,7 @@
         <span id="iconoAudio">▶</span>
         <span id="textoAudio">Escuchar nuestra canción</span>
       </button>
+    <p></p>
 
     <!-- Pie de página con tono verde más oscuro -->
     <footer id="pie-creador" class="pie-creador">
